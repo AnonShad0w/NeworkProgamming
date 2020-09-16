@@ -1,6 +1,6 @@
 import socket
 
-HEADERSIZE = 10
+BUFFERSIZE = 10
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((socket.gethostname(), 1243))
@@ -11,7 +11,7 @@ client.send(bytes(access_msg,"utf-8"))
 server_msg = ''
 server_msg = client.recv(16)
 full_server_msg = server_msg.decode("utf-8")
-print(full_server_msg)
+#print(full_server_msg)
 
 if full_server_msg == 'Access Granted':
 
@@ -21,8 +21,8 @@ if full_server_msg == 'Access Granted':
         while True:
             msg = client.recv(16)
             if new_msg:
-                print("new msg len:",msg[:HEADERSIZE])
-                msglen = int(msg[:HEADERSIZE])
+                print("new msg len:",msg[:BUFFERSIZE])
+                msglen = int(msg[:BUFFERSIZE])
                 print(f"full message length: {msglen}")
                 new_msg = False
 
@@ -30,10 +30,11 @@ if full_server_msg == 'Access Granted':
 
             # print(len(full_msg))
 
-            if len(full_msg)-HEADERSIZE == msglen:
+            if len(full_msg)-BUFFERSIZE == msglen:
                 print("full message received")
-                print(full_msg[HEADERSIZE:])
+                print(full_msg[BUFFERSIZE:])
                 new_msg = True
                 full_msg = ""
 else:
+    print(full_server_msg)
     client.close()
